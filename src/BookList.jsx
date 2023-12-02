@@ -5,25 +5,21 @@ import BooksListItem from "./BooksListItem";
 
 const BookList = () => {
   const [books, setBooks] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setBooks([
-        {
-          id: 1,
-          title: "JavaScript-The Comprehensive Guide",
-          author: "Philip Ackermann",
-          isbn: "978-3836286299",
-          rating: 5,
-        },
-      ]);
-    }, 2000);
+    fetch("http://localhost:3001/books")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Request Failed");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setBooks(data);
+      })
+      .catch((error) => setError(error));
   }, []);
-
-  useEffect(() => {
-    console.log("Elements in the state: ", books.length);
-    console.log("Table rows: ", document.querySelectorAll("tbody tr").length);
-  });
 
   const handleRate = (id, rating) => {
     setBooks((prevState) => {
@@ -34,7 +30,9 @@ const BookList = () => {
     });
   };
 
-  if (books.length === 0) {
+  if (error !== null) {
+    return <div>An error has occured: {error.message}</div>;
+  } else if (books.length === 0) {
     return <div>No books found</div>;
   } else {
     return (
