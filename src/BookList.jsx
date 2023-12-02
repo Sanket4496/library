@@ -20,6 +20,11 @@ const BookList = () => {
     }, 2000);
   }, []);
 
+  useEffect(() => {
+    console.log("Elements in the state: ", books.length);
+    console.log("Table rows: ", document.querySelectorAll("tbody tr").length);
+  });
+
   const handleRate = (id, rating) => {
     setBooks((prevState) => {
       return produce(prevState, (draftState) => {
