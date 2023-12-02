@@ -1,22 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const MyComponent = () => {
-  const [state1, setState1] = useState(0);
-  const [state2, setState2] = useState(1);
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => setState1(1), 1000);
-    setTimeout(() => setState2(2), 2000);
-  }, []);
+    setTimeout(() => setShow(false), 5000);
+  });
 
-  useEffect(() => {
-    console.log("State1 changed: " + state1 + "state2: " + state2);
-  }, [state1]);
-
-  useEffect(() => {
-    console.log("State2 changed: " + state2 + "state1: " + state1);
-  }, [state2]);
-  return <div>MyComponent</div>;
+  return show ? <Child /> : <div />;
 };
 
 export default MyComponent;
+
+function Child() {
+  const intervalRef = useRef(null);
+  const [time, setTime] = useState(0);
+
+  useEffect(() => {
+    console.log("Mount");
+    intervalRef.current = setInterval(() => {
+      setTime((prevTime) => prevTime + 1);
+    }, 1000);
+
+    return () => {
+      console.log("Unmount");
+      clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  return <div>{time}</div>;
+}
