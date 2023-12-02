@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./BookList.css";
+import { produce } from "immer";
 import BooksListItem from "./BooksListItem";
 
 const initialBooks = [
@@ -31,11 +32,9 @@ const BookList = () => {
 
   const handleRate = (id, rating) => {
     setBooks((prevState) => {
-      return prevState.map((book) => {
-        if (book.id === id) {
-          book.rating = rating;
-        }
-        return book;
+      return produce(prevState, (draftState) => {
+        const index = draftState.findIndex((book) => book.id === id);
+        draftState[index].rating = rating;
       });
     });
   };
@@ -46,10 +45,12 @@ const BookList = () => {
     return (
       <table>
         <thead>
-          <th>Title</th>
-          <th>Author</th>
-          <th>ISBN</th>
-          <th>Rating</th>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>ISBN</th>
+            <th>Rating</th>
+          </tr>
         </thead>
         <tbody>
           {books.map((book) => (
