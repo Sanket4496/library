@@ -8,17 +8,18 @@ const BookList = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/books")
-      .then((response) => {
+    (async () => {
+      try {
+        const response = await fetch("http://localhost:3001/books");
         if (!response.ok) {
           throw new Error("Request Failed");
         }
-        return response.json();
-      })
-      .then((data) => {
+        const data = await response.json();
         setBooks(data);
-      })
-      .catch((error) => setError(error));
+      } catch (error) {
+        setError(error);
+      }
+    })();
   }, []);
 
   const handleRate = (id, rating) => {
