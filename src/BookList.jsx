@@ -10,7 +10,7 @@ const BookList = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch("http://localhost:3001/books");
+        const response = await fetch(`${process.env.REACT_APP_API_SERVER}/books`);
         if (!response.ok) {
           throw new Error("Request Failed");
         }
