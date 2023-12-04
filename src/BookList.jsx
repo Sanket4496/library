@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./BookList.css";
 import { produce } from "immer";
 import BooksListItem from "./BooksListItem";
-import axios from "axios";
+import client from "./client";
 
 const BookList = () => {
   const [books, setBooks] = useState([]);
@@ -11,7 +11,7 @@ const BookList = () => {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get(
+        const { data } = await client.get(
           `${process.env.REACT_APP_API_SERVER}/books`
         );
         setBooks(data);
