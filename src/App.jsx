@@ -1,11 +1,11 @@
 import "./App.css";
-import BookList from "./BookList";
+import BooksListContainer from "./BooksList.container";
 
 function App() {
   return (
     <div>
       <h1>Hello React!</h1>
-      <BookList />
+      <BooksListContainer />
     </div>
   );
 }
