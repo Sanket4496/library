@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./BookList.css";
 import { produce } from "immer";
 import BooksListItem from "./BooksListItem";
+import axios from "axios";
 
 const BookList = () => {
   const [books, setBooks] = useState([]);
@@ -10,11 +11,9 @@ const BookList = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_SERVER}/books`);
-        if (!response.ok) {
-          throw new Error("Request Failed");
-        }
-        const data = await response.json();
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/books`
+        );
         setBooks(data);
       } catch (error) {
         setError(error);
