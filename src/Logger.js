@@ -1,3 +1,3 @@
 import { log } from "./log";
 
-export const Logger = ({ render }) => render(log);
+export const Logger = ({ children }) => children(log);
