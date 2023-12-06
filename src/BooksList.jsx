@@ -1,34 +1,17 @@
 import { Star, StarBorder } from "@mui/icons-material";
-import { produce } from "immer";
-import { useReducer } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import "./BookList.css";
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "RATE":
-      return produce(state, (draftState) => {
-        const index = draftState.findIndex(
-          (book) => book.id === action.payload.id
-        );
-        draftState[index].rating = action.payload.rating;
-      });
-    default:
-      return state;
-  }
-};
-
-const initialBooks = [
-  {
-    id: 1,
-    title: "JavaScript - The Comprehensive Guide",
-    author: "Philip Ackermann",
-    isbn: "978-3836286299",
-    rating: 5,
-  },
-];
+import middleware from "./booksListMiddleware";
+import reducer from "./booksListReducer";
 
 const BooksList = () => {
-  const [books, dispatch] = useReducer(reducer, initialBooks);
+  const [books, dispatch] = useReducer(reducer, []);
+
+  const middlewareDispatch = useMemo(() => middleware(dispatch), [dispatch]);
+
+  useEffect(() => {
+    middlewareDispatch({ type: "FETCH" });
+  }, [middlewareDispatch]);
 
   if (books.length === 0) {
     return <div>No books found</div>;
@@ -55,9 +38,9 @@ const BooksList = () => {
                     className="ratingButton"
                     key={i}
                     onClick={() =>
-                      dispatch({
+                      middlewareDispatch({
                         type: "RATE",
-                        payload: { id: book.id, rating: i + 1 },
+                        payload: { ...book, rating: i + 1 },
                       })
                     }
                   >
