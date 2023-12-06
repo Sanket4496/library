@@ -1,10 +1,22 @@
+import { useContext, useEffect } from "react";
 import "./BookList.css";
 import BooksListItem from "./BooksListItem";
+import BooksContext from "./BooksContext";
+import client from "./client";
 
-const BooksList = ({ books, error, handleRate }) => {
-  if (error !== null) {
-    return <div>An error has occured: {error.message}</div>;
-  } else if (books.length === 0) {
+const BooksList = () => {
+  const [books, setBooks] = useContext(BooksContext);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await client.get(
+        `${process.env.REACT_APP_API_SERVER}/books`
+      );
+      setBooks(data);
+    })();
+  }, []);
+
+  if (books.length === 0) {
     return <div>No books found</div>;
   } else {
     return (
@@ -19,7 +31,7 @@ const BooksList = ({ books, error, handleRate }) => {
         </thead>
         <tbody>
           {books.map((book) => (
-            <BooksListItem key={book.id} book={book} onRate={handleRate} />
+            <BooksListItem key={book.id} book={book} />
           ))}
         </tbody>
       </table>
